@@ -14,13 +14,15 @@ Please make sure you have followed these instructions: [python wallaroo](https:/
 ## Unzip
 Please remember to unzip the files in the 'asset/train' directory
 ```
-* cd 'asset/train'
-* gunzip *.gz
+cd 'asset/train'
+gunzip *.gz
 ```
 
 ## Running
-* make sure unzip step has happened
-
-
+```
+nc -l 127.0.0.1 7002
+machida --application-module sttwall --in 127.0.0.1:7010 --out 127.0.0.1:7002   --metrics 127.0.0.1:5001 --control 127.0.0.1:6000 --data 127.0.0.1:6001   --worker-name worker-name   --ponythreads=1
+sender --host 127.0.0.1:7010 --file files.txt --batch-size 1 --interval 100_000_000 --messages 2000 --ponythreads=1
+```
 
 
