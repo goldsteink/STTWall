@@ -67,6 +67,6 @@ if __name__ == "__main__":
     d2 = sys.argv[2]
     
     r=Recognize()
-    r.run(d1)
-    r.run(d2)
+    print "R1:", r.run(d1)
+    print "R2:", r.run(d2)
 
