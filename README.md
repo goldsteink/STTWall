@@ -41,8 +41,35 @@ sudo easy_install pip
 ```
 #### Dependencies
 ```
+sudo apt-get install python-dev
 sudo pip install --upgrade tensorflow
 sudo pip install --upgrade sugartensor
 sudo pip install --upgrade pandas
 sudo pip install --upgrade librosa
+sudo apt-get install -y zlib1g-dev libncurses5-dev libssl-dev
 ````
+
+
+
+#### LLVM-3.9
+```bash
+cd ~/tmp
+wget -O llvm-snapshot.gpg.key http://apt.llvm.org/llvm-snapshot.gpg.key
+sudo apt-key add llvm-snapshot.gpg.key
+sudo apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 886DDD89
+sudo add-apt-repository "deb http://apt.llvm.org/$(lsb_release -s -c)/ llvm-toolchain-$(lsb_release -s -c)-3.9 main"
+sudo apt-get update
+sudo apt-get install -y llvm-3.9
+```
+
+
+#### PCRE2
+```bash
+cd ~/tmp
+wget ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre2-10.21.tar.bz2
+tar xvf pcre2-10.21.tar.bz2
+cd pcre2-10.21
+./configure --prefix=/usr
+make
+sudo make install
+```
