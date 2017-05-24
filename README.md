@@ -26,3 +26,22 @@ sender --host 127.0.0.1:7010 --file files.txt --batch-size 1 --interval 100_000_
 ```
 
 
+#### GCC 6
+```bash
+sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+sudo apt-get update
+sudo apt-get install gcc-6 g++-6 gcc-snapshot
+sudo update-alternatives --install /usr/bin/gcc gcc \
+  /usr/bin/gcc-6 60 --slave /usr/bin/g++ g++ /usr/bin/g++-6
+```
+#### PIP
+sudo apt-get install python-setuptools
+sudo easy_install pip
+
+#### Dependencies
+```
+sudo pip install --upgrade tensorflow
+sudo pip install --upgrade sugartensor
+sudo pip install --upgrade pandas
+sudo pip install --upgrade librosa
+````
