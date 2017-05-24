@@ -111,7 +111,8 @@ class WordCounter(object):
         print ("Updated:{}, Count:{}".format(data_, self.count))
         rv = data_
         rv += ":"
-        rv += str(self.count)
+        #rv += str(self.count)
+        rv += "1"
         return rv
       
 
