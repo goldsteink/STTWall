@@ -92,6 +92,8 @@ sudo make install
 
 
 ### Metrics UI
+```bash
 setup docker(https://docs.docker.com/engine/installation/linux/ubuntu/#recommended-extra-packages-for-trusty-1404)
 sudo docker pull sendence/wallaroo-metrics-ui:pre-0.0.1
 docker run -d --name mui -p 0.0.0.0:4000:4000 -p 0.0.0.0:5001:5001  sendence/wallaroo-metrics-ui:pre-0.0.1
+```
