@@ -16,13 +16,14 @@ from recog import Recognize
 rec = Recognize()
 
 
-
+print_output=False
+print_words=False
 print_phrase=False
 print_not_valid_words=False
 
 def application_setup(args):
     
-    partition_count = 4
+    partition_count = 15
     partition_list = list();
     for x in range(0, partition_count):
         partition_list.append(x)
@@ -78,7 +79,7 @@ class WordCounter(object):
         self.count = 0
         self.valid_words = {}
         
-        file = "/home/kgoldstein/dev/eclipse_projects/STTWall/wordlist.txt"
+        file = "/home/ubuntu/dev/STTWall/wordlist.txt"
         print ("Valid dictionary words: {}".format(file))
         with open (file, "r") as myfile:
             for line in myfile:
@@ -107,11 +108,12 @@ class WordCounter(object):
         self.count += 1
         self.words[data_] = self.count
         
-        
-        print ("Updated:{}, Count:{}".format(data_, self.count))
+        if print_words:
+            print ("Updated:{}, Count:{}".format(data_, self.count))
         rv = data_
         rv += ":"
-        rv += str(self.count)
+        #rv += str(self.count)
+        rv += "1"
         return rv
       
 
@@ -129,7 +131,7 @@ class Computation_STT(object):
         return "word count"
 
     def compute(self, data_, state_):
-        print ("data:{}".format(data_))
+        #print ("data:{}".format(data_))
         
         a = datetime.datetime.now()
         the_text = rec.run(data_)
@@ -161,7 +163,8 @@ class Decoder(object):
 
 class Encoder(object):
     def encode(self, data_):
-        print ("Encode, data: {}".format(data_, type(data_)))
+        if print_output:
+            print ("Encode, data: {}".format(data_, type(data_)))
         return data_ + "\n"
  
 
@@ -219,17 +222,8 @@ class Computation_SyncPoint(object):
     
 
 if __name__ == "__main__":
-    w = WordCounter();
-    workd = "i"
-    w.update(workd)
-    
-    
-    print rec.run("/home/kgoldstein/Downloads/LibriSpeech/test-clean/1580/141083/1580-141083-0001.flac")
-    print rec.run("/home/kgoldstein/Downloads/LibriSpeech/test-clean/1580/141083/1580-141083-0002.flac")
-    print rec.run("/home/kgoldstein/Downloads/LibriSpeech/test-clean/1580/141083/1580-141083-0003.flac")
-    print rec.run("/home/kgoldstein/Downloads/LibriSpeech/test-clean/1580/141083/1580-141083-0004.flac")
-    print rec.run("/home/kgoldstein/Downloads/LibriSpeech/test-clean/1580/141083/1580-141083-0004.flac")
-    print rec.run("/home/kgoldstein/Downloads/LibriSpeech/test-clean/1580/141083/1580-141083-0005.flac")
-    print rec.run("/home/kgoldstein/Downloads/LibriSpeech/test-clean/1580/141083/1580-141083-0006.flac")
-    print rec.run("/home/kgoldstein/Downloads/LibriSpeech/test-clean/1580/141083/1580-141083-0007.flac")
+    #w = WordCounter();
+    #workd = "i"
+    #w.update(workd)
+    print rec.run("/home/ubuntu/datafiles/LibriSpeech/dev-clean/6313/76958/6313-76958-0031.flac")
     
