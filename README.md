@@ -73,3 +73,24 @@ cd pcre2-10.21
 make
 sudo make install
 ```
+
+#### PonyC
+```bash
+cd ~/tmp
+wget https://github.com/Sendence/ponyc/archive/sendence-19.2.8.tar.gz
+tar xzfv sendence-19.2.8.tar.gz
+cd ponyc-sendence-19.2.8
+sudo make config=release install
+
+cd ../
+git clone https://github.com/ponylang/pony-stable
+cd pony-stable
+git checkout 0054b429a54818d187100ed40f5525ec7931b31b
+make
+sudo make install
+```
+
+
+### Metrics UI
+setup docker(https://docs.docker.com/engine/installation/linux/ubuntu/#recommended-extra-packages-for-trusty-1404)
+sudo docker pull sendence/wallaroo-metrics-ui:pre-0.0.1
