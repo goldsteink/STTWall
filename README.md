@@ -35,9 +35,10 @@ sudo update-alternatives --install /usr/bin/gcc gcc \
   /usr/bin/gcc-6 60 --slave /usr/bin/g++ g++ /usr/bin/g++-6
 ```
 #### PIP
+```
 sudo apt-get install python-setuptools
 sudo easy_install pip
-
+```
 #### Dependencies
 ```
 sudo pip install --upgrade tensorflow
