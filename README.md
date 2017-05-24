@@ -47,6 +47,12 @@ sudo pip install --upgrade sugartensor
 sudo pip install --upgrade pandas
 sudo pip install --upgrade librosa
 sudo apt-get install -y zlib1g-dev libncurses5-dev libssl-dev
+
+wget http://www.mega-nerd.com/libsndfile/files/libsndfile-1.0.28.tar.gz
+tar zxvf libsndfile-1.0.28.tar.gz
+cd libsndfile-1.0.28
+make
+sudo make install
 ````
 
 
