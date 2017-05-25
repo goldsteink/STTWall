@@ -46,7 +46,6 @@ class Recognize:
         y = tf.sparse_to_dense(decoded[0].indices, decoded[0].dense_shape, decoded[0].values) + 1
      
         # load wave file
-        print "loading datafile:", datafile
         wav, _ = librosa.load(datafile, mono=True, sr=16000)
 
         # get mfcc feature
