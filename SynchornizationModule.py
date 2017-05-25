@@ -1,9 +1,10 @@
 import SocketServer
 from collections import defaultdict
+import time
 
 print_phrases=False
 glbl_words = defaultdict()
-
+target_file = open ('/tmp/machida.log', 'w')
 
 
 
@@ -15,6 +16,7 @@ class MyTCPHandler(SocketServer.BaseRequestHandler):
             #print "{} wrote:".format(self.client_address[0])
             if ( len(self.data) > 0 ):
                 self.updateWordCount(self.data)
+                self.writeFile()
             else:
                 break
     
@@ -48,6 +50,18 @@ class MyTCPHandler(SocketServer.BaseRequestHandler):
                 #print ("Unexpected error:{}".format(inst))
                 break
 
+
+    def writeFile(self):
+        strval = ""
+        target_file.seek(0)
+        target_file.truncate()
+        
+        target_file.write("\nLast update: " + time.strftime("%H:%M:%S"))
+        target_file.write("\n\n");
+        for key in glbl_words:
+            strval = "{}\t{}\n".format(key, glbl_words[key])
+            target_file.write(strval)
+        target_file.flush()
 
 if __name__ == "__main__":
     HOST, PORT = "localhost", 7002
