@@ -60,42 +60,87 @@ class MyTCPHandler(SocketServer.BaseRequestHandler):
             try:
                 word,count=t.split(":")
                 delta = int(count)
-                
-                if (delta > 0):
-                    print "Large Delta!"
-
                 if word.strip(): 
                     try:
                         wordObject = glbl_words[word]
                         oldcount = wordObject.get_count()
+                        newcount = delta + wordObject.get_count()
+                        wordObject.update_count(delta)
+                        print ("Word:{}, Old-Count:{}, Delta:{}, New-Count:{}".format(word, oldcount, delta, newcount))
                     except:
-                        oldcount = 0
-                        wordObject = Word(word,oldcount)
-                        glbl_list.append(wordObject)
-                        glbl_words[word] = wordObject
-                        
-                    newcount = delta + wordObject.get_count()
-                    wordObject.update_count(delta)
-                    print ("Word:{}, Old-Count:{}, Delta:{}, New-Count:{}".format(word, oldcount, delta, newcount))
+                        #oldcount = 0
+                        #wordObject = Word(word,oldcount)
+                        #glbl_list.append(wordObject)
+                        #glbl_words[word] = wordObject
+                        print ("Not handeling:{}".format(word))
+                        pass
             except Exception as inst:
-                #print ("Unexpected error:{}".format(inst))
-                break
+                print ("Unexpected error:{}".format(inst))
+                #break
 
 
+
+
+    #
+    # write stats to a file
+    #
     def writeFile(self):
         strval = ""
         target_file.seek(0)
         target_file.truncate()
         
-        target_file.write("\nLast update: " + time.strftime("%H:%M:%S") + "\n\n")
+        
+        
         glbl_list.sort()
+        
+        
+        #
+        # file header
+        #
+        new_total = 0
+        target_file.write("\nLast update: " + time.strftime("%H:%M:%S") + "\n")
+        for t in glbl_list:
+            new_total += t.get_count()
+        target_file.write("Total words counted: {}\n\n".format(str(new_total)))    
+        
+        
+        
+        #
+        # file contents
+        #
         for t in glbl_list:
             target_file.write(str(t))
+        total_words_counted = new_total
         target_file.flush()
+
+
+
+
+
+
+
+
 
 if __name__ == "__main__":
     HOST, PORT = "localhost", 7002
 
+    
+    #
+    # populate list of words I want to keep track of
+    #
+    
+    with open ("./wordlist.txt") as infile:
+        for line in infile:
+            strword = line.strip()
+            w = Word(strword,0) 
+            glbl_words[strword] = w
+            glbl_list.append(w)
+            print ("Tracking:{}".format(str(w)))
+        
+
+    #
+    # run server
+    #
     SocketServer.TCPServer.allow_reuse_address = True
     server = SocketServer.TCPServer((HOST, PORT), MyTCPHandler)
     #server.socket.setsockopt(level, option, value)
