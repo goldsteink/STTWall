@@ -15,7 +15,7 @@ machida \
 name=""
 for i in `seq 0 14`
 do
-    sleep 3
+    sleep 2
     name="worker-$i"
     echo "Starting worker: $name, CPU: $i"
     taskset -c $i \
