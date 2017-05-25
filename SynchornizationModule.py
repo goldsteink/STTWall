@@ -10,7 +10,7 @@ target_file = open ('/tmp/machida.log', 'w')
 
 
 
-class Word:
+class InstanceCount:
     def __init__(self, word_, count_):
         self._word = word_
         self._count = count_
@@ -42,13 +42,13 @@ class MyTCPHandler(SocketServer.BaseRequestHandler):
             self.data = self.request.recv(1024).strip()
             #print "{} wrote:".format(self.client_address[0])
             if ( len(self.data) > 0 ):
-                self.updateWordCount(self.data)
+                self.updateInstanceCount(self.data)
                 self.writeFile()
             else:
                 break
     
             
-    def updateWordCount(self, data_):
+    def updateInstanceCount(self, data_):
         #
         # be verbse
         #
@@ -61,23 +61,27 @@ class MyTCPHandler(SocketServer.BaseRequestHandler):
         # split up the tokens    
         #
         tokens = data_.split(";")
+        if ( tokens == False ):
+            pass
+        
         for t in tokens:
-            try:
-                word,count=t.split(":")
-                delta = int(count)
-                if word.strip(): 
-                    try:
-                        wordObject = glbl_words[word]
-                        oldcount = wordObject.get_count()
-                        newcount = delta + wordObject.get_count()
-                        wordObject.update_count(delta)
-                        print ("Word:{}, Old-Count:{}, Delta:{}, New-Count:{}".format(word, oldcount, delta, newcount))
-                    except:
-                        print ("Not handeling:{}".format(word))
-                        pass
-            except Exception as inst:
-                print ("Unexpected error:{}".format(inst))
-                #break
+            if t.strip(): 
+                try:
+                    word,count=t.split(":")
+                    delta = int(count)
+                    if word.strip(): 
+                        try:
+                            wordObject = glbl_words[word]
+                            oldcount = wordObject.get_count()
+                            newcount = delta + wordObject.get_count()
+                            wordObject.update_count(delta)
+                            print ("InstanceCount:{}, Old-Count:{}, Delta:{}, New-Count:{}".format(word, oldcount, delta, newcount))
+                        except:
+                            print ("Not handeling:{}".format(word))
+                            pass
+                except Exception as inst:
+                    print ("Unexpected error:{}".format(inst))
+                    #break
 
 
 
@@ -129,7 +133,7 @@ if __name__ == "__main__":
     with open ("./wordlist.txt") as infile:
         for line in infile:
             strword = line.strip()
-            w = Word(strword,0) 
+            w = InstanceCount(strword,0) 
             glbl_words[strword] = w
             glbl_list.append(w)
             print ("Tracking:{}".format(str(w)))
