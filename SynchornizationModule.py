@@ -1,7 +1,7 @@
 import SocketServer
 from collections import defaultdict
 
-
+print_phrases=False
 glbl_words = defaultdict()
 
 
@@ -12,7 +12,7 @@ class MyTCPHandler(SocketServer.BaseRequestHandler):
         # self.request is the TCP socket connected to the client
         while True:
             self.data = self.request.recv(1024).strip()
-            print "{} wrote:".format(self.client_address[0])
+            #print "{} wrote:".format(self.client_address[0])
             if ( len(self.data) > 0 ):
                 self.updateWordCount(self.data)
             else:
@@ -23,8 +23,9 @@ class MyTCPHandler(SocketServer.BaseRequestHandler):
         #
         # be verbse
         #
-        print "------------------------"
-        print data_
+        if ( print_phrases ):
+            print "------------------------"
+            print data_
         
         
         #
@@ -42,7 +43,7 @@ class MyTCPHandler(SocketServer.BaseRequestHandler):
                         oldcount = 0
                     newcount = delta + oldcount
                     glbl_words[word] = newcount
-                    print ("--------->Word:{}, Old-Count:{}, Delta:{}, New-Count:{}".format(word, oldcount, delta, newcount))
+                    print ("Word:{}, Old-Count:{}, Delta:{}, New-Count:{}".format(word, oldcount, delta, newcount))
             except Exception as inst:
                 #print ("Unexpected error:{}".format(inst))
                 break
