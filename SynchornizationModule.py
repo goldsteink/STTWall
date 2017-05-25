@@ -30,6 +30,11 @@ class Word:
         return self._count > other._count
     
 
+
+
+
+
+
 class MyTCPHandler(SocketServer.BaseRequestHandler):        
     def handle(self):
         # self.request is the TCP socket connected to the client
@@ -68,10 +73,6 @@ class MyTCPHandler(SocketServer.BaseRequestHandler):
                         wordObject.update_count(delta)
                         print ("Word:{}, Old-Count:{}, Delta:{}, New-Count:{}".format(word, oldcount, delta, newcount))
                     except:
-                        #oldcount = 0
-                        #wordObject = Word(word,oldcount)
-                        #glbl_list.append(wordObject)
-                        #glbl_words[word] = wordObject
                         print ("Not handeling:{}".format(word))
                         pass
             except Exception as inst:
@@ -101,7 +102,7 @@ class MyTCPHandler(SocketServer.BaseRequestHandler):
         target_file.write("\nLast update: " + time.strftime("%H:%M:%S") + "\n")
         for t in glbl_list:
             new_total += t.get_count()
-        target_file.write("Total words counted: {}\n\n".format(str(new_total)))    
+        target_file.write("Total words found: {}\n\n".format(str(new_total)))    
         
         
         
@@ -122,13 +123,9 @@ class MyTCPHandler(SocketServer.BaseRequestHandler):
 
 
 if __name__ == "__main__":
-    HOST, PORT = "localhost", 7002
-
-    
     #
     # populate list of words I want to keep track of
     #
-    
     with open ("./wordlist.txt") as infile:
         for line in infile:
             strword = line.strip()
@@ -141,8 +138,8 @@ if __name__ == "__main__":
     #
     # run server
     #
+    HOST, PORT = "localhost", 7002
     SocketServer.TCPServer.allow_reuse_address = True
     server = SocketServer.TCPServer((HOST, PORT), MyTCPHandler)
-    #server.socket.setsockopt(level, option, value)
     server.allow_reuse_address = True
     server.serve_forever()
