@@ -60,19 +60,22 @@ class MyTCPHandler(SocketServer.BaseRequestHandler):
             try:
                 word,count=t.split(":")
                 delta = int(count)
+                
+                if (delta > 0):
+                    print "Large Delta!"
 
                 if word.strip(): 
                     try:
-                        wordObject = glbl_list[word]
+                        wordObject = glbl_words[word]
                         oldcount = wordObject.get_count()
                     except:
                         oldcount = 0
                         wordObject = Word(word,oldcount)
                         glbl_list.append(wordObject)
+                        glbl_words[word] = wordObject
                         
                     newcount = delta + wordObject.get_count()
                     wordObject.update_count(delta)
-                    glbl_words[word] = newcount
                     print ("Word:{}, Old-Count:{}, Delta:{}, New-Count:{}".format(word, oldcount, delta, newcount))
             except Exception as inst:
                 #print ("Unexpected error:{}".format(inst))
