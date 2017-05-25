@@ -4,9 +4,31 @@ import time
 
 print_phrases=False
 glbl_words = defaultdict()
+glbl_list = []
 target_file = open ('/tmp/machida.log', 'w')
 
 
+
+
+class Word:
+    def __init__(self, word_, count_):
+        self._word = word_
+        self._count = count_
+        
+    def update_count(self, delta_):
+        self._count += delta_
+        
+    def get_count(self):
+        return self._count
+
+    def __str__(self):
+        if ( len(self._word)<8 ):
+            return "{}\t\t{}\n".format(self._word, self._count)
+        return "{}\t{}\n".format(self._word, self._count)
+    
+    def __lt__(self, other):
+        return self._count > other._count
+    
 
 class MyTCPHandler(SocketServer.BaseRequestHandler):        
     def handle(self):
@@ -38,12 +60,18 @@ class MyTCPHandler(SocketServer.BaseRequestHandler):
             try:
                 word,count=t.split(":")
                 delta = int(count)
-                if ( delta > 0 ):
+
+                if word.strip(): 
                     try:
-                        oldcount = glbl_words[word]
+                        wordObject = glbl_list[word]
+                        oldcount = wordObject.get_count()
                     except:
                         oldcount = 0
-                    newcount = delta + oldcount
+                        wordObject = Word(word,oldcount)
+                        glbl_list.append(wordObject)
+                        
+                    newcount = delta + wordObject.get_count()
+                    wordObject.update_count(delta)
                     glbl_words[word] = newcount
                     print ("Word:{}, Old-Count:{}, Delta:{}, New-Count:{}".format(word, oldcount, delta, newcount))
             except Exception as inst:
@@ -56,20 +84,16 @@ class MyTCPHandler(SocketServer.BaseRequestHandler):
         target_file.seek(0)
         target_file.truncate()
         
-        target_file.write("\nLast update: " + time.strftime("%H:%M:%S"))
-        target_file.write("\n\n");
-        for key in glbl_words:
-            if key.strip(): 
-                if ( len(key)<8 ):
-                    strval = "{}\t\t{}\n".format(key, glbl_words[key])
-                else:
-                    strval = "{}\t{}\n".format(key, glbl_words[key])
-                target_file.write(strval)
+        target_file.write("\nLast update: " + time.strftime("%H:%M:%S") + "\n\n")
+        glbl_list.sort()
+        for t in glbl_list:
+            target_file.write(str(t))
         target_file.flush()
 
 if __name__ == "__main__":
     HOST, PORT = "localhost", 7002
 
+    SocketServer.TCPServer.allow_reuse_address = True
     server = SocketServer.TCPServer((HOST, PORT), MyTCPHandler)
     #server.socket.setsockopt(level, option, value)
     server.allow_reuse_address = True
