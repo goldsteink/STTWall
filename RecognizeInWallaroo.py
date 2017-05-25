@@ -79,7 +79,7 @@ class WordCounter(object):
         self.count = 0
         self.valid_words = {}
         
-        file = "/home/ubuntu/dev/STTWall/wordlist.txt"
+        file = "./wordlist.txt"
         print ("Valid dictionary words: {}".format(file))
         with open (file, "r") as myfile:
             for line in myfile:
