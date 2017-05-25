@@ -59,7 +59,10 @@ class MyTCPHandler(SocketServer.BaseRequestHandler):
         target_file.write("\nLast update: " + time.strftime("%H:%M:%S"))
         target_file.write("\n\n");
         for key in glbl_words:
-            strval = "{}\t{}\n".format(key, glbl_words[key])
+            if ( len(key)<8 ):
+                strval = "{}\t\t{}\n".format(key, glbl_words[key])
+            else:
+                strval = "{}\t{}\n".format(key, glbl_words[key])
             target_file.write(strval)
         target_file.flush()
 
