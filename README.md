@@ -13,6 +13,11 @@ Please make sure you have followed these instructions: [python wallaroo](https:/
 
 
 # Dependencies & Building
+* This project assumes you are building on **Ubunut 14.04**, using **python 2.7**
+* Multi-worker runner assumes m4.large AWS instances
+* There is an AWS AMI called **STTWallDemo** for your convinience. If you use the AMI, you should be able to jumpt to the **Running** secion (last 2)
+
+
 ## Third Party Dependencies
 
 #### GCC 6
