@@ -114,10 +114,17 @@ mv /tmp/files.txt ~/dev/STTWall/
 
 
 ### Single worker
-```
+To start a single worker (test)
+```bash
 **terminal1:** python SynchornizationModule.py
 **terminal2:** machida --application-module sttwall --in 127.0.0.1:7010 --out 127.0.0.1:7002   --metrics 127.0.0.1:5001 --control 127.0.0.1:6000 --data 127.0.0.1:6001   --worker-name worker-name   --ponythreads=1
 **terminal3:** sender --host 127.0.0.1:7010 --file files.txt --batch-size 1 --interval 100_000_000 --messages 2000 --ponythreads=1
 ```
-
 ### Multi worker
+To start a multi worker (demo)
+```bash
+cd ~/dev/STTWall
+**terminal1:** python SynchornizationModule.py
+**terminal2:** ./runner.sh -- note, this assumes a 16 core host
+**terminal3:** ./send.sh
+```
