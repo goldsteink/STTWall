@@ -11,20 +11,14 @@ Kim and Park. Speech-to-Text-WaveNet. 2016. GitHub repository. https://github.co
 ## Wallaroo
 Please make sure you have followed these instructions: [python wallaroo](https://github.com/Sendence/wallaroo/blob/master/book/python/intro.md)
 
-## Unzip
-Please remember to unzip the files in the 'asset/train' directory
-```
-cd 'asset/train'
-gunzip *.gz
-```
 
-## Running
-```
-nc -l 127.0.0.1 7002
-machida --application-module sttwall --in 127.0.0.1:7010 --out 127.0.0.1:7002   --metrics 127.0.0.1:5001 --control 127.0.0.1:6000 --data 127.0.0.1:6001   --worker-name worker-name   --ponythreads=1
-sender --host 127.0.0.1:7010 --file files.txt --batch-size 1 --interval 100_000_000 --messages 2000 --ponythreads=1
-```
+# Dependencies & Building
+* This project assumes you are building on **Ubunut 14.04**, using **python 2.7**
+* Multi-worker runner assumes m4.large AWS instances
+* There is an AWS AMI called **STTWallDemo** for your convinience. If you use the AMI, you should be able to jumpt to the **Running** secion (last 2)
 
+
+## Third Party Dependencies
 
 #### GCC 6
 ```bash
@@ -39,8 +33,8 @@ sudo update-alternatives --install /usr/bin/gcc gcc \
 sudo apt-get install python-setuptools
 sudo easy_install pip
 ```
-#### Dependencies
-```
+#### Python & PIP Installs
+```bash
 sudo apt-get install python-dev
 sudo pip install --upgrade tensorflow
 sudo pip install --upgrade sugartensor
@@ -53,7 +47,7 @@ tar zxvf libsndfile-1.0.28.tar.gz
 cd libsndfile-1.0.28
 make
 sudo make install
-````
+```
 
 
 
@@ -102,4 +96,40 @@ sudo make install
 setup docker(https://docs.docker.com/engine/installation/linux/ubuntu/#recommended-extra-packages-for-trusty-1404)
 sudo docker pull sendence/wallaroo-metrics-ui:pre-0.0.1
 docker run -d --name mui -p 0.0.0.0:4000:4000 -p 0.0.0.0:5001:5001  sendence/wallaroo-metrics-ui:pre-0.0.1
+```
+
+## Unzip
+Please remember to unzip the files in the 'asset/train' directory... this is part ot of the STTWall project:
+```bash
+cd ~/dev/STTWall/asset/train
+gunzip *.gz
+```
+
+
+## Setup and Running
+### Download the audio files
+1. Download the disired file set located in: [Libri](http://www.openslr.org/12/), and put them in the location of your choice (ex: ~/Downloads).
+2. Generate the file list:
+```bash
+cd ~Downloads/
+find . -name "*.flac" -exec readlink -f {} \; >> /tmp/files.txt
+mv /tmp/files.txt ~/dev/STTWall/
+```
+
+
+
+### Single worker
+To start a single worker (test)
+```bash
+**terminal1:** python SynchornizationModule.py
+**terminal2:** machida --application-module sttwall --in 127.0.0.1:7010 --out 127.0.0.1:7002   --metrics 127.0.0.1:5001 --control 127.0.0.1:6000 --data 127.0.0.1:6001   --worker-name worker-name   --ponythreads=1
+**terminal3:** sender --host 127.0.0.1:7010 --file files.txt --batch-size 1 --interval 100_000_000 --messages 2000 --ponythreads=1
+```
+### Multi worker
+To start a multi worker (demo)
+```bash
+cd ~/dev/STTWall
+**terminal1:** python SynchornizationModule.py
+**terminal2:** ./runner.sh -- note, this assumes a 16 core host
+**terminal3:** ./send.sh
 ```
