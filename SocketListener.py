@@ -4,8 +4,8 @@
  
 import socket
 import sys
+import time
 from thread import *
-
 
 
 
@@ -13,31 +13,9 @@ from thread import *
 VERBOSE = False
 HOST = ''   # Symbolic name meaning all available interfaces
 PORT = 7002 # Arbitrary non-privileged port
+target_file = open ('/tmp/machida.log', 'w')
 
 
-
- 
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-if VERBOSE:
-    print ("Socket created")
- 
-#Bind socket to local host and port
-try:
-    s.bind((HOST, PORT))
-    if VERBOSE:
-        print ("Socket bound to:{}".format(PORT)) 
-except socket.error as msg:
-    print "Bind failed. Error Code : " + str(msg[0]) + " Message " + msg[1]
-    sys.exit()
-     
-if VERBOSE:
-    print ("Socket bind complete")
- 
-s.listen(10)
-if VERBOSE:
-    print ("Socket now listening")
-    
 
 
 
@@ -45,8 +23,7 @@ if VERBOSE:
 
 
 #Function for handling connections. This will be used to create threads
-def clientthread(conn):
-    words = {}
+def clientthread(conn, words):
     buffer = ""
     while True:
         data = conn.recv(1)
@@ -54,11 +31,14 @@ def clientthread(conn):
             break
         elif data == ';':
             handleWordUpdate(buffer, words)
+            writeFile(words)
             buffer = ""
         else:
             buffer += data
                  
     conn.close()
+
+
 
 
 
@@ -80,23 +60,92 @@ def handleWordUpdate(wordcountpair, words):
         #if ( VERBOSE ):
         print ("Updated {} to:{}".format(word, theVal))
     except:
-        #print("Word {} does not exist in dictionary!".format(word))
-        words[word] = 0
-        print ("{}->{}".format(word,count))
+        if ( VERBOSE ):
+            print("Word {} does not exist in dictionary!".format(word))
         return
     
 
-# 
-#now keep talking with the client
+
+
 #
-while 1:
-    #wait to accept a connection - blocking call
-    conn, addr = s.accept()
+# write stats to a file
+#
+def writeFile(wordcountpair):
+    strval = ""
+    target_file.seek(0)
+    target_file.truncate()
+    
+    
+    
+    #
+    # file header
+    #
+    new_total = 0
+    target_file.write("\nLast update: " + time.strftime("%H:%M:%S") + "\n")
+    target_file.write("Total words found: {}\n\n".format(len(wordcountpair.keys())))
+    
+    
+    
+    #
+    # file contents
+    #
+    for t in wordcountpair.keys():
+        key = t
+        val = wordcountpair[key]
+        target_file.write("{}:\t{}\n".format(key, val))
+    target_file.flush()
+
+
+
+if __name__ == "__main__":
+    
+    #
+    # populate allowable words
+    #
+    words={}
+    with open ("./wordlist.txt") as infile:
+        for line in infile:
+            strword = line.strip()
+            words[strword] = 0
+            if ( VERBOSE ):
+                print ("Registered interest in word:{}".format(strword))
+    
+    #
+    # socket start
+    #
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     if VERBOSE:
-        print 'Connected with ' + addr[0] + ':' + str(addr[1])
+        print ("Socket created")
      
-    #start new thread takes 1st argument as a function name to be run, second is the tuple of arguments to the function.
-    start_new_thread(clientthread ,(conn,))
+    #Bind socket to local host and port
+    try:
+        s.bind((HOST, PORT))
+        if VERBOSE:
+            print ("Socket bound to:{}".format(PORT)) 
+    except socket.error as msg:
+        print "Bind failed. Error Code : " + str(msg[0]) + " Message " + msg[1]
+        sys.exit()
+         
+    if VERBOSE:
+        print ("Socket bind complete")
+     
+    s.listen(10)
+    if VERBOSE:
+        print ("Socket now listening")
+        
+        
+    # 
+    #now keep talking with the client
+    #
+    while 1:
+        #wait to accept a connection - blocking call
+        conn, addr = s.accept()
+        if VERBOSE:
+            print 'Connected with ' + addr[0] + ':' + str(addr[1])
+         
+        #start new thread takes 1st argument as a function name to be run, second is the tuple of arguments to the function.
+        start_new_thread(clientthread ,(conn,words,))
 
 
-s.close()
+    s.close()
