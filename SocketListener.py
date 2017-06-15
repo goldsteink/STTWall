@@ -92,7 +92,7 @@ def writeFile(wordcountpair):
     for t in wordcountpair.keys():
         key = t
         val = wordcountpair[key]
-        target_file.write("{}:\t{}\n".format(key, val))
+        target_file.write("{}:{}\n".format(key, val))
     target_file.flush()
 
 
